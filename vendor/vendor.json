@@ -1,0 +1,100 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "ut14+l1OD5NjGdl3xLU75tHWGwk=",
+			"path": "cloud-config-client-go/commom",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Q0qbtmVNnWOWnuTCO2XrJxu2ZtA=",
+			"path": "cloud-config-client-go/conf",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "xU12uzSQf8DMlxxdCyTq6gQWvCI=",
+			"path": "cloud-config-client-go/core",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "Ryej09dbw3gk0yWT2cggGXBu0X4=",
+			"path": "github.com/astaxie/beego/orm",
+			"revision": "f16688817aa428d10361394015b40d096b680542",
+			"revisionTime": "2017-12-18T11:18:59Z"
+		},
+		{
+			"checksumSHA1": "Cxr56jtsHmJAYSVTYFDrx4jsHN8=",
+			"path": "github.com/go-redis/redis",
+			"revision": "d0f86971b5d61de9cebd2616b932acb7ba14d957",
+			"revisionTime": "2017-11-01T13:47:30Z"
+		},
+		{
+			"checksumSHA1": "kvS+uQLTXEshAuK8nIpC4Gb4tio=",
+			"path": "github.com/go-redis/redis/internal",
+			"revision": "d0f86971b5d61de9cebd2616b932acb7ba14d957",
+			"revisionTime": "2017-11-01T13:47:30Z"
+		},
+		{
+			"checksumSHA1": "BuzQsdMJMUXm8Zfwtuoz4QUdnZE=",
+			"path": "github.com/go-redis/redis/internal/consistenthash",
+			"revision": "d0f86971b5d61de9cebd2616b932acb7ba14d957",
+			"revisionTime": "2017-11-01T13:47:30Z"
+		},
+		{
+			"checksumSHA1": "pgFOanECYY7qj95cq3730Z3ZDoo=",
+			"path": "github.com/go-redis/redis/internal/hashtag",
+			"revision": "d0f86971b5d61de9cebd2616b932acb7ba14d957",
+			"revisionTime": "2017-11-01T13:47:30Z"
+		},
+		{
+			"checksumSHA1": "83zUabwsQG2lhxFxXVZvqgLYUvU=",
+			"path": "github.com/go-redis/redis/internal/pool",
+			"revision": "d0f86971b5d61de9cebd2616b932acb7ba14d957",
+			"revisionTime": "2017-11-01T13:47:30Z"
+		},
+		{
+			"checksumSHA1": "nV8QdXwLaQYdfGHNUb8T+gy7Tsc=",
+			"path": "github.com/go-redis/redis/internal/proto",
+			"revision": "d0f86971b5d61de9cebd2616b932acb7ba14d957",
+			"revisionTime": "2017-11-01T13:47:30Z"
+		},
+		{
+			"checksumSHA1": "8GIsvH50Ty+BFVuOpKldYVPoAoE=",
+			"path": "github.com/go-sql-driver/mysql",
+			"revision": "e3f0fdcf52770a162d5a4540ddb8d9957ff456d1",
+			"revisionTime": "2017-06-01T06:26:16Z"
+		},
+		{
+			"checksumSHA1": "HUXE+Nrcau8FSaVEvPYHMvDjxOE=",
+			"path": "github.com/satori/go.uuid",
+			"revision": "5bf94b69c6b68ee1b541973bb8e1144db23a194b",
+			"revisionTime": "2017-03-21T23:07:31Z"
+		},
+		{
+			"checksumSHA1": "ZSWoOPUNRr5+3dhkLK3C4cZAQPk=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "5420a8b6744d3b0345ab293f6fcba19c978f1183",
+			"revisionTime": "2018-03-28T19:50:20Z"
+		},
+		{
+			"checksumSHA1": "KLGA43U5FrjJT/9v9HxsV10TRP8=",
+			"path": "logs",
+			"revision": "440b07c864f18870da1813f45c244e67989d4440",
+			"revisionTime": "2018-09-14T02:54:50Z"
+		},
+		{
+			"checksumSHA1": "PucDtSboRtnFuzgZ0Llz9IglkeE=",
+			"path": "springcloud/go-eureka-client/eureka",
+			"revision": "1ab43c0711a4f02bf3ed6c1f5cd92d4fdc28e538",
+			"revisionTime": "2018-06-04T09:49:05Z"
+		},
+		{
+			"checksumSHA1": "57enPaoAySoHwEB85OJxpngVZo0=",
+			"path": "utils",
+			"revision": "e844fcae4cece6f2cf8a35e926376a4cd70aa968",
+			"revisionTime": "2018-08-17T01:45:07Z"
+		}
+	],
+	"rootPath": "oauth"
+}

@@ -1,0 +1,46 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+   name: oauth
+   namespace: platform
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: saas-oauth
+    spec:
+      volumes:
+        - name: code
+          persistentVolumeClaim:
+            claimName: pvc-platform
+        - name: tz-config
+          hostPath:
+            path: /etc/localtime
+      containers:
+        - name: oauth
+          image: docker.adatafun.com/saas/oauth:1.0
+          imagePullPolicy: Always
+          volumeMounts:
+          - mountPath: "/log"
+            name: code
+          - mountPath: "/etc/localtime"
+            name: tz-config
+          ports:
+            - containerPort: 9091
+      imagePullSecrets:     # 使用私有镜像仓库
+        - name: registry-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oauth
+  namespace: platform
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9090
+    targetPort: 9091
+    protocol: TCP
+  selector:
+    app: oauth
