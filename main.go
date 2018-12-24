@@ -39,6 +39,10 @@ func init() {
 	orm.RegisterDataBase("default", "mysql", mysql_user+":"+mysql_pass+"@tcp("+mysql_urls+":"+mysql_port+")/"+mysql_name+ "?charset=utf8&loc=Asia%2FShanghai")
 	orm.Debug = true
 	runtime.GOMAXPROCS(runtime.NumCPU())
+	db,  _ := orm.GetDB("default")
+	db.SetConnMaxLifetime(time.Hour * 7)
+	orm.SetMaxOpenConns("default", 40)
+	orm.SetMaxIdleConns("default", 20)
 
 	machines :=[]string{constant.EUREKA_SERVER}
 	utils.StartEureka(constant.APP_NAME, conf.GetInteger("app.port"), nil, machines)
