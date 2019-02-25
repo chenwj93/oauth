@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"errors"
 	"fmt"
 	"github.com/go-redis/redis"
 	"strconv"
@@ -11,47 +10,76 @@ import (
 //redis 实例
 var Client *redis.Client
 
+type Lock struct {
+	key      string
+	overTime int
+	lockV    int64
+}
+
+func NewRedisLock(key string, overTime int) *Lock {
+	return &Lock{key: key, overTime: overTime}
+}
+
 //create by cwj on 2017-11-11
 //get lock from redis
-func GetLock(key string, wait *chan bool, sec int) {
+func (l *Lock) Get() {
+	if l.key == "" || Client == nil {
+		panic("lock undefined")
+	}
 	for {
-		ret := Client.SetNX(key, time.Now().UnixNano(), time.Duration(ZERO))
-		if ret.Val() { //获取锁成功，直接返回
-			*wait <- true
-			return
-		}
-		value := Client.Get(key)
-		if time.Now().Sub(time.Unix(ZERO_B, ParseInt64(value.Val()))) > time.Second*time.Duration(sec) { //前一个获取锁进程处理时间已经超时
-			value2 := Client.GetSet(key, time.Now().UnixNano())
-			if value.Val() == value2.Val() { //说明获取锁成功
-				*wait <- true
+		lockV := time.Now().UnixNano()
+
+		script := "if redis.call('get', KEYS[1])  == false then redis.call('set', KEYS[1], ARGV[1]); redis.call('expire', KEYS[1], 5) return 'OK' else return redis.call('get', KEYS[1]) end"
+		ret := Client.Eval(script, []string{l.key}, lockV)
+		ULog.Println("redis setnx ret:", ret.String())
+		if ret != nil {
+			if ParseString(ret.Val()) == "OK" { //获取锁成功，直接返回
+				l.lockV = lockV
 				return
+			} else if preLock := ParseInt64(ret.Val()); preLock > 0 {
+				if (lockV - preLock) > int64(l.overTime)*int64(time.Second) { //前一个获取锁进程处理时间已经超时
+					script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('set', KEYS[1], ARGV[2]) else return -1 end"
+					ret := Client.Eval(script, []string{l.key}, preLock, lockV)
+
+					if ret.Val() == "OK" { //说明获取锁成功
+						//*wait <- true
+						l.lockV = lockV
+						return
+					}
+				}
 			}
 		}
-		time.Sleep(time.Microsecond * 100)
+
+		time.Sleep(time.Millisecond * 100)
 	}
 }
 
 //create by cwj on 2017-11-11
 //release lock from redis
-func ReleaseLock(key string, wait *chan bool) {
-	<-*wait
-	Client.Del(key)
+func (l *Lock) Release() {
+	if l.key == "" || Client == nil {
+		panic("lock undefined")
+	}
+	//Client.Del(key)
+	script := "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end"
+	Client.Eval(script, []string{l.key}, l.lockV)
+	//fmt.Println(cmd.Result())
+	//<-*wait
 }
 
-func CheckDuplicate(key string) error {
-	now := time.Now().Unix()
-	fmt.Println(now)
-	v := Client.Get(key)
-	fmt.Println(v.Val())
-	if now-ParseInt64(v.Val()) <= 10 {
-		return errors.New("操作频繁！")
+func CheckBusy(key string, timeLine int64) bool {
+	interval := time.Second * time.Duration(timeLine)
+	ULog.Println(key, interval)
+	ok := Client.SetNX(key, 1, interval)
+	ULog.Println(ok)
+	if ok.Err() != nil {
+		return false
 	}
-	Client.Set(key, now, 0)
-	return nil
+	return !ok.Val()
 }
 
 func GetSerialNo(key string, expiry time.Time, length int) string {
+	ULog.Println("key:", key)
 	no := Client.Incr(key)
 	if no.Val()%10 == 1 {
 		Client.ExpireAt(key, expiry)
@@ -60,5 +88,7 @@ func GetSerialNo(key string, expiry time.Time, length int) string {
 }
 
 func GetDateSerialNo(key string, length int) string {
-	return GetSerialNo(key, GetToday24(), length)
+	no := GetSerialNo(TodayWithout()+key, GetToday24(), length)
+	ULog.Println("redis:", no)
+	return no
 }

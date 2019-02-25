@@ -6,7 +6,7 @@ import (
 
 	"time"
 	"logs"
-	"oauth/constant"
+	// "oauth/constant"
 )
 
 // @controller(oauthuser)
@@ -24,14 +24,14 @@ func (c *OauthUserController) CheckPassword(userName, password interface{})(*mod
 	return user, true
 }
 
-func (c *OauthUserController) StoreUserInfo(user *models.OauthUser, token, abs string) error{
+func (c *OauthUserController) StoreUserInfo(user *models.OauthUser, token, abs string, expireTime time.Time) error{
 	userInfo := &models.UserInfo{}
 	err := utils.Assignment(*user, userInfo)
 	if err != nil{
 		logs.Error(err)
 		return err
 	}
-	expireTime := time.Now().Add(constant.TokenExpiry)
+	// expireTime := time.Now().Add(constant.TokenExpiry)
 	loginInfo := &models.LoginInfo{expireTime, userInfo}
 
 	models.Uim.Put(abs, userInfo)

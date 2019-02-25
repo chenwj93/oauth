@@ -79,19 +79,23 @@ func (a *Access) Login(paramInput map[string]interface{}) (*utils.Response, erro
 	if status == constant.LOGIN_FAILD { // 密码错误
 		return utils.ConcatFailed(nil, constant.PASSWORD_MISTAKE)
 	}
+	expireTime := time.Now().Add(constant.TokenExpiry)
 	if status == constant.LOGIN_FIRST { // 没有重复登录
 		user, ok := userctl.CheckPassword(userName, password)
 		if !ok { // 密码校验不通过
 			return utils.ConcatFailed(nil, constant.PASSWORD_MISTAKE)
 		}
-		err := userctl.StoreUserInfo(user, token, abstract)
-		if err != nil{
+		err := userctl.StoreUserInfo(user, token, abstract, expireTime)
+		if err != nil {
 			return utils.ConcatFailed(nil)
 		}
 		uId = user.Id
 		clientId = user.ClientId
 	}
-	go OauthAccessTokensController{}.Save(token, uId, constant.USER_BACK)
+	go func() {
+		OauthAccessTokensController{}.Save(token, uId, constant.USER_BACK)
+		ScheduleList.PushBack(&models.Index{abstract, token, expireTime})
+	}()
 	var cType string = "company"
 	if strings.Contains(clientId, RootClient) {
 		cType = "fs"

@@ -36,10 +36,10 @@ func init() {
 
 	// timezone
 	orm.DefaultTimeLoc = time.Local
-	orm.RegisterDataBase("default", "mysql", mysql_user+":"+mysql_pass+"@tcp("+mysql_urls+":"+mysql_port+")/"+mysql_name+ "?charset=utf8&loc=Asia%2FShanghai")
+	orm.RegisterDataBase("default", "mysql", mysql_user+":"+mysql_pass+"@tcp("+mysql_urls+":"+mysql_port+")/"+mysql_name+ "?charset=utf8mb4&loc=Asia%2FShanghai")
 	orm.Debug = true
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	db,  _ := orm.GetDB("default")
+	db, _ := orm.GetDB("default")
 	db.SetConnMaxLifetime(time.Hour * 7)
 	orm.SetMaxOpenConns("default", 40)
 	orm.SetMaxIdleConns("default", 20)
